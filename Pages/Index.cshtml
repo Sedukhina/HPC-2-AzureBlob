@@ -1,0 +1,87 @@
+﻿@page
+@model UploadModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Image Gallery</h1>
+    
+    @using (Html.BeginForm("Upload", "Gallery", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <div>
+            @Html.LabelFor(m => m.Name)
+            @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+        </div>
+
+        <div>
+            @Html.LabelFor(m => m.Description)
+            @Html.TextAreaFor(m => m.Description, new { @class = "form-control", rows = 4 })
+        </div>
+
+        <div>
+            @Html.LabelFor(m => m.Tags)
+            @Html.TextBoxFor(m => m.Tags, new { @class = "form-control" })
+        </div>
+
+        <div>
+            @Html.Label("File", "Choose File")
+            <input type="file" name="File" class="form-control" />
+        </div>
+
+        <br />
+        <button type="submit" class="btn btn-primary">Upload</button>
+    }
+</div>
+
+<h2>Gallery</h2>
+
+@if (Model.GalleryImages.Any())
+{
+            <div style="display: flex; flex-direction: column; gap: 1em;">
+        @foreach (var image in Model.GalleryImages)
+        {
+                <div style="display: flex; align-items: center; gap: 1em; position: relative;">
+                    <img src="@image.Url" alt="@image.Name" style="max-width: 200px; max-height: 150px;" />
+                    <div style="flex-grow: 1;">
+                        <p><strong>Name:</strong> @image.Name</p>
+                        <p><strong>Description:</strong> @image.Description</p>
+                        <p><strong>Tags:</strong> @image.Tags</p>
+                        <p><strong>IsSnapshot:</strong> @image.IsSnapshot</p>
+                    </div>
+                    
+                <!-- Duplicate Button -->
+                <form method="post" asp-page-handler="Duplicate" style="margin: 0;">
+                    <input type="hidden" name="blobName" value="@image.BlobName" />
+                    <button type="submit" 
+                            style="background: transparent; border: 1px solid #555; color: #555; font-size: 0.9em; cursor: pointer; padding: 0.3em 0.6em;" 
+                            title="Duplicate image">
+                        Duplicate
+                    </button>
+                </form>
+                <!-- Snapshot Button -->
+                <form method="post" asp-page-handler="Snapshot" style="margin-left: 0.5em;">
+                    <input type="hidden" name="blobName" value="@image.BlobName" />
+                    <button type="submit"
+                        style="background-color: #007bff; border: none; color: white; padding: 0.3em 0.6em; border-radius: 3px; cursor: pointer;"
+                        title="Create snapshot">
+                        Snapshot
+                    </button>
+                </form>
+                <!-- Delete Button -->
+                <form method="post" asp-page-handler="Delete" style="margin: 0;">
+                      <input type="hidden" name="blobName" value="@image.BlobName" />
+                      <button type="submit" 
+                              style="background: transparent; border: none; color: red; font-weight: bold; font-size: 1.5em; cursor: pointer;" 
+                              title="Delete image">
+                              ×
+                      </button>
+                </form>
+            </div>
+        }
+    </div>
+}
+else
+{
+        <p>No images uploaded yet.</p>
+}
