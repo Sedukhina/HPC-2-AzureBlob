@@ -153,12 +153,6 @@ namespace Blob.Pages
             try
             {
                 var snapshotResponse = await blobClient.CreateSnapshotAsync();
-
-                // Optional: log or store the snapshot URI or metadata
-                var snapshotUri = blobClient.WithSnapshot(snapshotResponse.Value.Snapshot).Uri;
-                Console.WriteLine($"Snapshot created: {snapshotUri}");
-
-                // You can return this info to the user or store it if needed
             }
             catch (RequestFailedException ex)
             {
